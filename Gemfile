@@ -24,8 +24,8 @@ gem "jbuilder"
 gem "bootstrap"
 gem "sassc-rails"
 
-gem 'devise'
-gem 'ros-apartment', require: 'apartment'
+gem "devise"
+gem "ros-apartment", require: "apartment"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
