@@ -25,6 +25,7 @@ gem "bootstrap"
 gem "sassc-rails"
 
 gem "devise"
+gem "devise-bootstrap-views"
 gem "ros-apartment", require: "apartment"
 
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
