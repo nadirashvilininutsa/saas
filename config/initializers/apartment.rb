@@ -26,7 +26,7 @@ Apartment.configure do |config|
   # - a hash which keys are tenant names, and values custom db config
   # (must contain all key/values required in database.yml)
   #
-  config.tenant_names = lambda { Organiization.pluck(:subdomain) }
+  config.tenant_names = lambda { Organization.pluck(:subdomain) }
   # config.tenant_names = ['tenant1', 'tenant2']
   # config.tenant_names = {
   #   'tenant1' => {

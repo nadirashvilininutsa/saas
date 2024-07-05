@@ -1,3 +1,5 @@
 class Employee < ApplicationRecord
-  belongs_to :organization
+  belongs_to :user
+
+  validates :user, presence: true
 end
