@@ -46,7 +46,7 @@
 
     <div class="form-group mt-3">
       <%= o.label :plan_id, "plan" %>
-      <%= o.select :plan_id, options_for_select(Plan.options_for_select), {}, required: true, class: "form-control" %>
+      <%= o.select :plan_id, options_for_select(Plan.options_for_select, selected: params[:plan_id]), { include_blank: 'Choose your plan' }, { required: true, class: "form-control" } %>
     </div>
   <% end %>
 

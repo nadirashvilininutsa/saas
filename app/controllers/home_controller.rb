@@ -3,6 +3,7 @@ class HomeController < ApplicationController
   # before_action :set_tenant, if: :user_signed_in?
 
   def index
+    @plans = Plan.all
   end
 
   # private
