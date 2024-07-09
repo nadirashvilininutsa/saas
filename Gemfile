@@ -27,6 +27,7 @@ gem "sassc-rails"
 gem "devise"
 gem "devise-bootstrap-views"
 gem "ros-apartment", require: "apartment"
+gem 'rack-cors'
 
 gem "byebug"
 
