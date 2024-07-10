@@ -9,13 +9,9 @@ Bundler.require(*Rails.groups)
 module NinutsaSaas
   class Application < Rails::Application
     config.hosts << "lvh.me"
-
     config.hosts << /.*\.lvh\.me/
 
-
-    # config.session_store :cookie_store, key: '_ninutsa_sass_session', domain: :all
     config.session_store :cookie_store, key: '_ninutsa_sass_session', domain: 'lvh.me', same_site: :lax
-
 
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.2
