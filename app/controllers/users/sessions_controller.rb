@@ -16,7 +16,7 @@ class Users::SessionsController < Devise::SessionsController
     sign_in(resource_name, resource)
     yield resource if block_given?
 
-    after_sign_in_path_for(resource)
+    redirect_to after_sign_in_path_for(resource), allow_other_host: true
   end
 
   # DELETE /resource/sign_out
@@ -30,7 +30,6 @@ class Users::SessionsController < Devise::SessionsController
     yield if block_given?
     # respond_to_on_destroy
     redirect_to root_url(subdomain: nil), allow_other_host: true and return
-
   end
 
   protected
@@ -42,8 +41,7 @@ class Users::SessionsController < Devise::SessionsController
 
   def switch_domain_to_public
     if !user_signed_in?
-      Apartment::Tenant.switch('public') do 
-      end
+      Apartment::Tenant.switch('public')
     end
   end
 
@@ -51,9 +49,9 @@ class Users::SessionsController < Devise::SessionsController
     organization = Organization.find_by(id: resource.organization_id)
     if organization
       subdomain = organization.subdomain
-      Apartment::Tenant.switch(subdomain) do 
-      end
-      redirect_to root_url(subdomain: subdomain), allow_other_host: true and return
+      root_url(subdomain: subdomain)
+    else
+      root_url(subdomain: nil)
     end
   end
 end

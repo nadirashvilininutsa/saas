@@ -14,7 +14,7 @@ module NinutsaSaas
 
 
     # config.session_store :cookie_store, key: '_ninutsa_sass_session', domain: :all
-    config.session_store :cookie_store, key: '_ninutsa_sass_session', domain: ["bla.lvh.me", "mamuka.lvh.me"], tld_length: 2
+    config.session_store :cookie_store, key: '_ninutsa_sass_session', domain: 'lvh.me', same_site: :lax
 
 
     # Initialize configuration defaults for originally generated Rails version.
