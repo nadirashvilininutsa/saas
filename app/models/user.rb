@@ -4,19 +4,10 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable, :confirmable,
          :recoverable, :rememberable, :validatable
   
+  has_and_belongs_to_many :projects
   belongs_to :organization, optional: false
-  has_one :employee, dependent: :destroy
   scope :admins, -> { where(admin: true) }
   validates :first_name, :last_name, presence: true
-  # after_create :create_employee
 
   accepts_nested_attributes_for :organization
-
-  private
-
-  # def create_employee
-  #   Apartment::Tenant.switch!(organization.subdomain) do
-  #     Employee.create(user: self)
-  #   end
-  # end
 end

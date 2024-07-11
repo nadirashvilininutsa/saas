@@ -2,10 +2,10 @@
 
 one:
   name: MyString
-  email: MyString
-  organization: one
+  file: MyString
+  project: one
 
 two:
   name: MyString
-  email: MyString
-  organization: two
+  file: MyString
+  project: two

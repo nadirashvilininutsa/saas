@@ -10,15 +10,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_07_05_183505) do
+ActiveRecord::Schema[7.2].define(version: 2024_07_11_115355) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
-  create_table "employees", force: :cascade do |t|
+  create_table "artifacts", force: :cascade do |t|
+    t.string "name"
+    t.string "file"
+    t.bigint "project_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.bigint "user_id", null: false
-    t.index ["user_id"], name: "index_employees_on_user_id"
+    t.index ["project_id"], name: "index_artifacts_on_project_id"
   end
 
   create_table "organizations", force: :cascade do |t|
@@ -31,12 +33,40 @@ ActiveRecord::Schema[7.2].define(version: 2024_07_05_183505) do
     t.index ["subdomain"], name: "index_organizations_on_subdomain", unique: true
   end
 
+  create_table "plan_descriptions", force: :cascade do |t|
+    t.text "content"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "plan_descriptions_plans", id: false, force: :cascade do |t|
+    t.bigint "plan_id", null: false
+    t.bigint "plan_description_id", null: false
+    t.index ["plan_description_id"], name: "index_plan_descriptions_plans_on_plan_description_id"
+    t.index ["plan_id"], name: "index_plan_descriptions_plans_on_plan_id"
+  end
+
   create_table "plans", force: :cascade do |t|
     t.string "name", null: false
     t.decimal "price", precision: 10, scale: 2, null: false
-    t.text "description"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "projects", force: :cascade do |t|
+    t.string "title", null: false
+    t.text "description", null: false
+    t.date "completion_date"
+    t.boolean "completed", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "projects_users", id: false, force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "project_id", null: false
+    t.index ["project_id"], name: "index_projects_users_on_project_id"
+    t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -60,7 +90,7 @@ ActiveRecord::Schema[7.2].define(version: 2024_07_05_183505) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
-  add_foreign_key "employees", "users"
+  add_foreign_key "artifacts", "projects"
   add_foreign_key "organizations", "plans"
   add_foreign_key "users", "organizations"
 end
