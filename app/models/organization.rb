@@ -1,5 +1,5 @@
 class Organization < ApplicationRecord
-  has_many :users
+  has_many :users, dependent: :destroy
   has_one :admin_user, -> { where(admin: true) }, class_name: 'User'
 
   validates :name, presence: true, uniqueness: true

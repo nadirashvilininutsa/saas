@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_07_11_115355) do
+ActiveRecord::Schema[7.2].define(version: 2024_07_11_160038) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -33,17 +33,15 @@ ActiveRecord::Schema[7.2].define(version: 2024_07_11_115355) do
     t.index ["subdomain"], name: "index_organizations_on_subdomain", unique: true
   end
 
+  create_table "plan_description_plans", force: :cascade do |t|
+    t.integer "plan_id"
+    t.integer "plan_description_id"
+  end
+
   create_table "plan_descriptions", force: :cascade do |t|
     t.text "content"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "plan_descriptions_plans", id: false, force: :cascade do |t|
-    t.bigint "plan_id", null: false
-    t.bigint "plan_description_id", null: false
-    t.index ["plan_description_id"], name: "index_plan_descriptions_plans_on_plan_description_id"
-    t.index ["plan_id"], name: "index_plan_descriptions_plans_on_plan_id"
   end
 
   create_table "plans", force: :cascade do |t|
