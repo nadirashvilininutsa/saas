@@ -18,8 +18,8 @@
           </div>
           <div class="features">
             <ul>
-              <% plan.description.split(',').each do |feature| %>
-                <li><%= feature.strip %></li>
+              <% plan.plan_descriptions.each do |description| %>
+                <li><%= description.content.strip.capitalize %></li>
               <% end %>
             </ul>
           </div>
