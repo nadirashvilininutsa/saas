@@ -9,41 +9,25 @@
   </div>
 
   <div class="container">
-    <div class="plans row justify-content-center", style="gap: 1rem">
-      <div class="plan border border-dark rounded h-10", style="height: 15rem; width: 15rem">
-        <h2>Free Plan</h2>
-        <div class="price mb-2">
-          <strong>Price: Free</strong>
+    <div class="plans row justify-content-center" style="gap: 1rem">
+      <% @plans.each do |plan| %>
+        <div class="plan border border-dark rounded h-10" style="height: 15rem; width: 15rem">
+          <h2><%= plan.name %> Plan</h2>
+          <div class="price mb-2">
+            <strong>Price: <%= plan.price == 0 ? "Free" : "$#{'%.2f' % plan.price}" %></strong>
+          </div>
+          <div class="features">
+            <ul>
+              <% plan.plan_descriptions.each do |description| %>
+                <li><%= description.content.strip.capitalize %></li>
+              <% end %>
+            </ul>
+          </div>
+          <p class="text-center">
+            <%= link_to 'Sign Up', new_user_registration_path(plan_id: plan.id), class: 'btn btn-primary sign-up' %>
+          </p>
         </div>
-        <div class="features">
-          <ul>
-            <li>Unlimited File Uploads</li>
-            <li>Responsive design</li>
-            <li>Access anywhere</li>
-            <li>1 Project</li>
-          </ul>
-        </div>
-        <p>
-          <%= link_to 'Sign Up', new_user_registration_path, class: 'btn btn-primary sign-up' %>
-        </p>
-      </div>
-      <div class="plan border border-dark rounded h-10", style="height: 15rem; width: 15rem">
-        <h2>Premium Plan</h2>
-        <div class="price mb-2">
-          <strong>Price: $10</strong>
-        </div>
-        <div class="features">
-          <ul>
-            <li>Unlimited File Uploads</li>
-            <li>Responsive design</li>
-            <li>Access anywhere</li>
-            <li>Unlimited Projects</li>
-          </ul>
-        </div>
-        <p>
-          <%= link_to 'Sign Up', new_user_registration_path, class: 'btn btn-primary sign-up' %>
-        </p>
-      </div>
+      <% end %>
     </div>
   </div>
 <% end %>

@@ -7,3 +7,19 @@
 #   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
 #     MovieGenre.find_or_create_by!(name: genre_name)
 #   end
+
+if Plan.count.zero? && PlanDescription.count.zero? && PlanDescriptionPlan.count.zero?
+  free_plan = Plan.create!( name: "Free", price: 0 )
+  premium_plan = Plan.create!( name: "Premium", price: 10 )
+
+  plan_common_descriptions = ["Unlimited file uploads", "Responsive design", "Access anywhere"]
+
+  plan_common_descriptions.each do |description|
+    plan_description = PlanDescription.create!(content: description)
+    free_plan.plan_descriptions << plan_description
+    premium_plan.plan_descriptions << plan_description
+  end
+
+  free_plan.plan_descriptions.create!(content: "1 project")
+  premium_plan.plan_descriptions.create!(content: "Unlimited projects")
+end

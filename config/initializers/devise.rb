@@ -176,6 +176,17 @@ Devise.setup do |config|
   # secure: true in order to force SSL only cookies.
   # config.rememberable_options = {}
 
+  # ------------------------
+  # ------------------------
+  # ------------------------
+  # Ensure Devise uses the same session store settings
+  # config.rememberable_options = { secure: Rails.env.production?, domain: :all }
+  # Optional: Ensure other cookies (e.g., for rememberable) are shared across subdomains
+  # config.cookie_options = { domain: :all }
+  # ------------------------
+  # ------------------------
+  # ------------------------
+
   # ==> Configuration for :validatable
   # Range for password length.
   config.password_length = 6..128

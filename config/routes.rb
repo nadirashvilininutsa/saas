@@ -1,7 +1,18 @@
+class SubdomainConstraint
+  def self.matches?(request)
+    request.subdomain.present? && request.subdomain != "www"
+  end
+end
+
 Rails.application.routes.draw do
+  constraints subdomain: /.*/ do
+    resources :projects
+  end
+
   root "home#index"
 
-  devise_for :users
+  devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
+
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.
