@@ -1,37 +1,66 @@
 <%= form_with(model: project) do |form| %>
-  <% if project.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
+  <div class="form-group mt-3">
+    <%= form.label :title, class: 'fw-bold' %>
+    <%= form.text_field :title, class: 'form-control' %>
+  </div>
 
-      <ul>
-        <% project.errors.each do |error| %>
-          <li><%= error.full_message %></li>
-        <% end %>
-      </ul>
-    </div>
+  <% if project.errors.any? %>
+    <% title_errors = project.errors.select { |error| error.attribute == :title } %>
+    <% if title_errors.any? %>
+      <% title_errors.each do |error| %>
+        <p class="text-danger"><%= error.full_message %></p>
+      <% end %>
+    <% end %>
   <% end %>
 
-  <div>
-    <%= form.label :title, style: "display: block" %>
-    <%= form.text_field :title %>
+
+  <div class="form-group mt-3">
+    <%= form.label :description, class: 'fw-bold' %>
+    <%= form.text_area :description, class: 'form-control text-area-height' %>
   </div>
 
-  <div>
-    <%= form.label :description, style: "display: block" %>
-    <%= form.text_area :description %>
+  <% if project.errors.any? %>
+    <% description_errors = project.errors.select { |error| error.attribute == :description } %>
+    <% if description_errors.any? %>
+      <% description_errors.each do |error| %>
+        <p class="text-danger"><%= error.full_message %></p>
+      <% end %>
+    <% end %>
+  <% end %>
+
+
+  <div class="form-group mt-3">
+    <%= form.label :completion_date, "Expected Completion Date", class: 'fw-bold' %>
+    <%= form.date_field :completion_date, class: 'form-control' %>
   </div>
 
-  <div>
-    <%= form.label :completion_date, style: "display: block" %>
-    <%= form.date_field :completion_date %>
-  </div>
+  <% if project.errors.any? %>
+    <% completion_date_errors = project.errors.select { |error| error.attribute == :completion_date } %>
+    <% if completion_date_errors.any? %>
+      <% completion_date_errors.each do |error| %>
+        <p class="text-danger"><%= error.full_message %></p>
+      <% end %>
+    <% end %>
+  <% end %>
 
-  <div>
-    <%= form.label :completed, style: "display: block" %>
-    <%= form.check_box :completed %>
-  </div>
 
-  <div>
-    <%= form.submit %>
+  <!--
+  <div class="form-group mt-3">
+    <%= form.label :completed %>
+    <%= form.check_box :completed, class: '' %>
+  </div>
+  -->
+
+
+  <div class="row gap-3">
+    <div class="d-flex mt-3">
+      <div class="actions me-3">
+        <%= form.submit class: 'btn btn-outline-success' %>
+      </div>
+
+      <div class="actions me-3">
+        <%= link_to "Back to Projects", projects_path, class: 'btn btn-outline-danger' %>
+      </div>
+    </div>
   </div>
 <% end %>
