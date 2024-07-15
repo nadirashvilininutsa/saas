@@ -6,7 +6,12 @@ end
 
 Rails.application.routes.draw do
   constraints subdomain: /.*/ do
-    resources :projects
+    resources :projects do
+      member do
+        patch :complete_and_archive
+        patch :reopen
+      end
+    end
   end
 
   root "home#index"

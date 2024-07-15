@@ -10,6 +10,12 @@ class Project < ApplicationRecord
 
   validate :free_plan_can_only_have_one_project
 
+
+  # Scopes
+  scope :active, -> { where(completed: false) }
+  scope :archived, -> { where(completed: true) }
+
+  
   private
 
   def must_have_at_least_one_user
