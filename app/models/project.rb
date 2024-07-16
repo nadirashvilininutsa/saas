@@ -23,7 +23,9 @@ class Project < ApplicationRecord
   end
 
   def free_plan_can_only_have_one_project
-    if organization&.plan&.name&.downcase == "free" && organization.projects.count > 1
+    plan = Plan.find(organization.plan_id)
+    plan_name = plan.name
+    if plan_name.downcase == "free" && organization.projects.count > 1
       errors.add(:base, "Free plan can only have one project")
     end
   end

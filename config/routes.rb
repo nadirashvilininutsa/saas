@@ -5,12 +5,19 @@ class SubdomainConstraint
 end
 
 Rails.application.routes.draw do
-  constraints subdomain: /.*/ do
-    resources :projects do
-      member do
-        patch :complete_and_archive
-        patch :reopen
-      end
+  # constraints subdomain: /.*/ do
+  #   resources :projects do
+  #     member do
+  #       patch :complete_and_archive
+  #       patch :reopen
+  #     end
+  #   end
+  # end
+
+  resources :projects do
+    member do
+      patch :complete_and_archive
+      patch :reopen
     end
   end
 

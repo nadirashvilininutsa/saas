@@ -3,7 +3,7 @@
 <% content_for :title, "Projects" %>
 
 <h1>Projects</h1>
-<h1><%= @current_user.organization.name %></h1>
+<h1><%= current_user.organization.name %></h1>
 
 <% if @projects.empty? %>
   <div>
@@ -87,6 +87,6 @@
 <% end %>
 
   
-<% if @current_user.organization.plan.name.downcase != "free" || @projects.count < 1 %>
+<% if (free_plan? && @projects.count < 1) || !free_plan? %>
   <%= link_to "New project", new_project_path %>
 <% end %>

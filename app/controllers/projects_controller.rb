@@ -7,7 +7,6 @@ class ProjectsController < ApplicationController
     @active_projects = Project.active
     @archived_projects = Project.archived
 
-    @current_user = current_user
   end
 
   # GET /projects/1 or /projects/1.json
@@ -35,6 +34,8 @@ class ProjectsController < ApplicationController
 
   # POST /projects or /projects.json
   def create
+    Rails.logger.info "1. Current tenant: #{Apartment::Tenant.current}"
+
     @project = Project.new(project_params)
     @project.organization = current_user.organization
     @project.users << current_user
@@ -84,4 +85,10 @@ class ProjectsController < ApplicationController
     def project_params
       params.require(:project).permit(:title, :description, :completion_date, :completed)
     end
+
+    def free_plan?
+      plan = Plan.find(current_user.organization.plan_id)
+      plan.name.downcase == "free"
+    end
+    helper_method :free_plan? 
 end

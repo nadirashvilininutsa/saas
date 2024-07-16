@@ -14,11 +14,13 @@ class ApplicationController < ActionController::Base
 
     if user_signed_in?
       user_subdomain = current_user.organization.subdomain
+      # Apartment::Tenant.switch!(user_subdomain)
 
       if current_subdomain != user_subdomain
         redirect_to root_url(subdomain: user_subdomain), allow_other_host: true
       end
     else
+      # Apartment::Tenant.switch!("public")
       if current_subdomain.present?
         redirect_to root_url(subdomain: nil), allow_other_host: true
       end
