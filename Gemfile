@@ -26,6 +26,8 @@ gem "sassc-rails"
 
 gem "devise"
 gem "devise-bootstrap-views"
+gem 'devise_invitable', '~> 2.0.0'
+
 gem "ros-apartment", require: "apartment"
 gem 'rack-cors'
 

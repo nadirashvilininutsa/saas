@@ -5,25 +5,25 @@ class SubdomainConstraint
 end
 
 Rails.application.routes.draw do
-  # constraints subdomain: /.*/ do
-  #   resources :projects do
-  #     member do
-  #       patch :complete_and_archive
-  #       patch :reopen
-  #     end
-  #   end
-  # end
-
-  resources :projects do
-    member do
-      patch :complete_and_archive
-      patch :reopen
+  constraints subdomain: /.*/ do
+    resources :projects do
+      member do
+        patch :complete_and_archive
+        patch :reopen
+      end
     end
   end
 
+  # resources :projects do
+  #   member do
+  #     patch :complete_and_archive
+  #     patch :reopen
+  #   end
+  # end
+
   root "home#index"
 
-  devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
+  devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions', invitations: 'users/invitations' }
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 

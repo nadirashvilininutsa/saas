@@ -15,8 +15,12 @@
   </p>
 
   <p>
-    <strong>Completed:</strong>
-    <%= project.completed %>
+    <strong>Status:</strong>
+    <% if project.completed? %>
+      <%= "Complete" %>
+    <% else %>
+      <%= "Ongoing" %>
+    <% end %>
   </p>
 
 </div>

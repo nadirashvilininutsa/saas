@@ -1,9 +1,6 @@
-<p style="color: green"><%= notice %></p>
-
-<% content_for :title, "Projects" %>
-
-<h1>Projects</h1>
-<h1><%= current_user.organization.name %></h1>
+<div class="container">
+  <h1 class="text-end"><%= current_user.organization.name %></h1>
+</div>
 
 <% if @projects.empty? %>
   <div>
@@ -12,77 +9,13 @@
 
 <% else %>
   <% if @active_projects.any? %>
-    <p>Ongoing Projects</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Details</th>
-          <th>Expected Compl. Date</th>
-          <th>Actions</th>
-          <% if current_user.admin? %>
-            <th>Admin Actions</th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <% @active_projects.each do |project| %>
-          <tr>
-            <td><%= project.title %></td>
-            <td><%= truncate(project.details, length: 100, omission: '... (continued)') %></td>
-            <td><%= project.completion_date %></td>
-            <td>
-              <%= link_to("View", project_path(project), class: "") %>
-              <%= link_to("Edit", edit_project_path(project), class: "") %>
-            </td>
-            <% if current_user.admin? %>
-              <td>
-                <%= link_to("Complete and Archive", complete_and_archive_project_path(project), method: :patch, class: "", data: { confirm: "Are you sure?" }) %>
-                <%= link_to("Delete", project_path(project), class: "", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
-              </td>
-            <% end %>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <h3 class="text-center mt-3">Ongoing Projects</h3>
+    <%= render "list", projects: @active_projects %>
   <% end %>
 
-
   <% if @archived_projects.any? %>
-    <p>Archived Projects</p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Title</th>
-          <th>Details</th>
-          <th>Compl. Date</th>
-          <th>Actions</th>
-          <% if current_user.admin? %>
-            <th>Admin Actions</th>
-          <% end %>
-        </tr>
-      </thead>
-      <tbody>
-        <% @archived_projects.each do |project| %>
-          <tr>
-            <td><%= project.title %></td>
-            <td><%= truncate(project.details, length: 100, omission: '... (continued)') %></td>
-            <td><%= project.completion_date %></td>
-            <td>
-              <%= link_to("View", project_path(project), class: "") %>
-            </td>
-            <% if current_user.admin? %>
-              <td>
-                <%= link_to("Reopen", reopen_project_path(project), method: :patch, class: "", data: { confirm: "Are you sure?" }) %>
-                <%= link_to("Delete", project_path(project), class: "", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
-              </td>
-            <% end %>
-          </tr>
-        <% end %>
-      </tbody>
-    </table>
+    <h3 class="text-center mt-5">Archived Projects</h3>
+    <%= render "list", projects: @archived_projects %>
   <% end %>
 <% end %>
 
