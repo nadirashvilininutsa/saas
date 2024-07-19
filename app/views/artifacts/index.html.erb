@@ -1,0 +1,33 @@
+<%- model_class = Artifact -%>
+
+<div class="page-header">
+  <h1><%=t '.title', default: model_class.model_name.human.pluralize.titleize %></h1>
+</div>
+
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th><%= model_class.human_attribute_name(:name) %></th>
+      <th><%= model_class.human_attribute_name(:file) %></th>
+      <th><%=t '.actions', default: t("helpers.actions") %></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @artifacts.each do |artifact| %>
+      <tr>
+        <td><%= link_to artifact.name, artifact_path(artifact) %></td>
+        <td><%= artifact_tag artifact.file.url %></td>
+        <td>
+          <%= link_to("View", artifact_path(artifact), class: "btn btn-success") %>
+
+          <%= link_to("Edit", edit_artifact_path(artifact), class: "btn btn-warning") %>
+
+          <%= link_to("Delete", artifact_path(artifact), class: "btn btn-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<%= link_to("New", new_artifact_path, class: 'btn btn-primary') %>

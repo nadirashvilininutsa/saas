@@ -33,6 +33,12 @@ gem 'rack-cors'
 
 gem "byebug"
 
+gem "carrierwave"
+gem "mini_magick"
+
+gem 'aws-sdk-s3', require: false
+gem 'carrierwave-aws'
+
 # Use Kredis to get higher-level data types in Redis [https://github.com/rails/kredis]
 # gem "kredis"
 

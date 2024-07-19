@@ -5,7 +5,9 @@ class SubdomainConstraint
 end
 
 Rails.application.routes.draw do
-  get "users/index"
+  root "home#index"
+
+  # get "users/index"
   constraints subdomain: /.*/ do
     resources :projects do
       member do
@@ -13,16 +15,9 @@ Rails.application.routes.draw do
         patch :reopen
       end
     end
+
+    resources :artifacts
   end
-
-  # resources :projects do
-  #   member do
-  #     patch :complete_and_archive
-  #     patch :reopen
-  #   end
-  # end
-
-  root "home#index"
 
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions', invitations: 'users/invitations' }
   resources :users, only: [:index, :destroy] do
