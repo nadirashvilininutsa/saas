@@ -1,9 +1,12 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[ show edit update destroy ]
+  before_action :set_project, only: %i[ show edit update destroy complete_and_archive reopen ]
 
   # GET /projects or /projects.json
   def index
     @projects = Project.all
+    @active_projects = Project.active
+    @archived_projects = Project.archived
+
   end
 
   # GET /projects/1 or /projects/1.json
@@ -19,15 +22,30 @@ class ProjectsController < ApplicationController
   def edit
   end
 
+  def complete_and_archive
+    @project.update(completed: true, completion_date: Date.today)
+    redirect_to projects_path, notice: 'Project has been completed and archived.'
+  end
+
+  def reopen
+    @project.update(completed: false)
+    redirect_to projects_path, notice: 'Project has been reopened.'
+  end
+
   # POST /projects or /projects.json
   def create
+    Rails.logger.info "1. Current tenant: #{Apartment::Tenant.current}"
+
     @project = Project.new(project_params)
+    @project.organization = current_user.organization
+    @project.users << current_user
 
     respond_to do |format|
       if @project.save
         format.html { redirect_to project_url(@project), notice: "Project was successfully created." }
         format.json { render :show, status: :created, location: @project }
       else
+        @project.users.delete(current_user)
         format.html { render :new, status: :unprocessable_entity }
         format.json { render json: @project.errors, status: :unprocessable_entity }
       end
@@ -67,4 +85,10 @@ class ProjectsController < ApplicationController
     def project_params
       params.require(:project).permit(:title, :description, :completion_date, :completed)
     end
+
+    def free_plan?
+      plan = Plan.find(current_user.organization.plan_id)
+      plan.name.downcase == "free"
+    end
+    helper_method :free_plan? 
 end

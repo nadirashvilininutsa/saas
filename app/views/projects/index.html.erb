@@ -1,16 +1,25 @@
-<p style="color: green"><%= notice %></p>
-
-<% content_for :title, "Projects" %>
-
-<h1>Projects</h1>
-
-<div id="projects">
-  <% @projects.each do |project| %>
-    <%= render project %>
-    <p>
-      <%= link_to "Show this project", project %>
-    </p>
-  <% end %>
+<div class="container">
+  <h1 class="text-end"><%= current_user.organization.name %></h1>
 </div>
 
-<%= link_to "New project", new_project_path %>
+<% if @projects.empty? %>
+  <div>
+    <p>You do not have any projects</p>
+  </div>
+
+<% else %>
+  <% if @active_projects.any? %>
+    <h3 class="text-center mt-3">Ongoing Projects</h3>
+    <%= render "list", projects: @active_projects %>
+  <% end %>
+
+  <% if @archived_projects.any? %>
+    <h3 class="text-center mt-5">Archived Projects</h3>
+    <%= render "list", projects: @archived_projects %>
+  <% end %>
+<% end %>
+
+  
+<% if (free_plan? && @projects.count < 1) || !free_plan? %>
+  <%= link_to "New project", new_project_path %>
+<% end %>

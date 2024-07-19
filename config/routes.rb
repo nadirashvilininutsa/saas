@@ -5,13 +5,31 @@ class SubdomainConstraint
 end
 
 Rails.application.routes.draw do
+  get "users/index"
   constraints subdomain: /.*/ do
-    resources :projects
+    resources :projects do
+      member do
+        patch :complete_and_archive
+        patch :reopen
+      end
+    end
   end
+
+  # resources :projects do
+  #   member do
+  #     patch :complete_and_archive
+  #     patch :reopen
+  #   end
+  # end
 
   root "home#index"
 
-  devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions' }
+  devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions', invitations: 'users/invitations' }
+  resources :users, only: [:index, :destroy] do
+    member do
+      patch :toggle_user_status
+    end
+  end
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
