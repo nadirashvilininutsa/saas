@@ -1,39 +1,38 @@
 class Users::InvitationsController < Devise::InvitationsController
-  before_action :configure_permitted_parameters
+  before_action :configure_permitted_parameters, only: [:create]
 
   def create
     build_resource(invite_params)
 
-    if resource.save
-      yield resource if block_given?
-      if resource.active_for_authentication?
-        resource.organization = current_user.organization
+    self.resource = invite_resource do |u|
+      u.organization_id = current_user.organization.id
+    end
 
+    resource_invited = resource.errors.empty?
+    yield resource if block_given?
+
+    if resource_invited
+      if is_flashing_format? && self.resource.invitation_sent_at
+        set_flash_message :notice, :send_instructions, email: self.resource.email
+      end
+      if self.method(:after_invite_path_for).arity == 1
+        respond_with resource, location: after_invite_path_for(current_inviter)
       else
-        set_flash_message! :notice, :"signed_up_but_#{resource.inactive_message}"
-        expire_data_after_sign_in!
-        respond_with resource, location: after_inactive_sign_up_path_for(resource)
+        respond_with resource, location: after_invite_path_for(current_inviter, resource)
       end
     else
-      respond_with resource
+      respond_with(resource)
     end
-  end
-
-  def destroy
-    @user = @organization.users.find(params[:id])
-    @user.destroy
-    redirect_to root_path, notice: 'User was successfully deleted.'
   end
 
   protected
 
-  # def authenticate_inviter!
-  #   authenticate_admin!(force: true)
-  # end
-
-  # Permit the new params here.
-  def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:invite, keys: [:email, :first_name, :last_name, :admin, :organization ])
+  def build_resource(hash = {})
+    self.resource = resource_class.new_with_session(hash, session)
   end
 
+  # Permit new params
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.permit(:invite, keys: [:email, :first_name, :last_name, :admin, :organization_id])
+  end
 end
