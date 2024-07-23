@@ -6,11 +6,11 @@ class ProjectsController < ApplicationController
     @projects = Project.all
     @active_projects = Project.active
     @archived_projects = Project.archived
-
   end
 
   # GET /projects/1 or /projects/1.json
   def show
+    @artifacts = @project.artifacts
   end
 
   # GET /projects/new
@@ -22,11 +22,13 @@ class ProjectsController < ApplicationController
   def edit
   end
 
+  # PATCH /projects/1 or /projects/1.json
   def complete_and_archive
     @project.update(completed: true, completion_date: Date.today)
     redirect_to projects_path, notice: 'Project has been completed and archived.'
   end
 
+  # PATCH /projects/1 or /projects/1.json
   def reopen
     @project.update(completed: false)
     redirect_to projects_path, notice: 'Project has been reopened.'
@@ -76,19 +78,18 @@ class ProjectsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_project
-      @project = Project.find(params[:id])
-    end
+  
+  def set_project
+    @project = Project.find(params[:id])
+  end
 
-    # Only allow a list of trusted parameters through.
-    def project_params
-      params.require(:project).permit(:title, :description, :completion_date, :completed)
-    end
+  def project_params
+    params.require(:project).permit(:title, :description, :completion_date, :completed)
+  end
 
-    def free_plan?
-      plan = Plan.find(current_user.organization.plan_id)
-      plan.name.downcase == "free"
-    end
-    helper_method :free_plan? 
+  def free_plan?
+    plan = Plan.find(current_user.organization.plan_id)
+    plan.name.downcase == "free"
+  end
+  helper_method :free_plan? 
 end

@@ -1,55 +1,60 @@
 class ArtifactsController < ApplicationController
-  before_action :set_artifact, only: [:show, :edit, :update, :destroy]
+  before_action :set_project
+  before_action :set_artifact, only: %i[update destroy]
 
-  def index
-    @artifacts = Artifact.all
-  end
+  # def index
+  #   @artifacts = @project.artifacts
+  # end
 
-  def show
-  end
+  # def show
+  # end
 
-  def new
-    binding.irb
-    @project_id = params[:project_id]
-    @artifact = Artifact.new
-  end
+  # def new
+  #   @project_id = params[:project_id]
+  #   @artifact = Artifact.new
+  # end
 
   def create
-    @artifact = Artifact.new(artifact_params)
-    @artifact.project_id = params[:artifact][:project_id]
-
-    binding.irb
-
+    @artifact = @project.artifacts.build(artifact_params)
     if @artifact.save
-      redirect_to @artifact, notice: 'Artifact was successfully created.'
+      redirect_to @project, notice: 'Artifact was successfully uploaded.'
     else
-      render :new
+      render :show
     end
   end
 
-  def edit
-  end
+  # def edit
+  # end
 
   def update
     if @artifact.update(artifact_params)
-      redirect_to @artifact, notice: 'Artifact was successfully updated.'
+      redirect_to @project, notice: 'Artifact was successfully uploaded.'
     else
-      render :edit
+      render :show
     end
   end
 
   def destroy
+    binding.irb
+
+    @artifact = Artifact.find(params[:artifact_id])
+    binding.irb
     @artifact.destroy
-    redirect_to artifacts_url, notice: 'Artifact was successfully destroyed.'
+    redirect_to @project, notice: 'Artifact was successfully destroyed.'
   end
+
 
   private
 
-  def set_artifact
-    @artifact = Artifact.find(params[:id])
+  def set_project
+    @project = Project.find(params[:id])
   end
 
+  def set_artifact
+    @artifact = @project.artifacts.find(params[:artifact_id])
+  end
+  
   def artifact_params
-    params.require(:artifact).permit(:name, :file, :project_id)
+    params.require(:artifact).permit(:name, :file)
   end
 end

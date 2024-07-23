@@ -1,7 +1,7 @@
 class Project < ApplicationRecord
   has_many :projects_users
   has_many :users, through: :projects_users
-  has_many :artifacts, dependent: :destroy
+  has_many :artifacts, as: :artifactable, dependent: :destroy
   belongs_to :organization
 
   validates :title, presence: true

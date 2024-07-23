@@ -1,5 +1,6 @@
 class Artifact < ApplicationRecord
-  belongs_to :project
+  mount_uploader :file, FileUploader
+  belongs_to :artifactable, polymorphic: true
 
   validates :name, presence: true
   validates :file, presence: true

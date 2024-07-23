@@ -13,10 +13,9 @@ Rails.application.routes.draw do
       member do
         patch :complete_and_archive
         patch :reopen
+        resources :artifacts, only: [:create, :update, :destroy]
       end
     end
-
-    resources :artifacts
   end
 
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions', invitations: 'users/invitations' }
