@@ -1,13 +1,13 @@
 class ArtifactsController < ApplicationController
   before_action :set_project
-  before_action :set_artifact, only: %i[update destroy]
+  before_action :set_artifact, only: %i[show update destroy]
 
   # def index
   #   @artifacts = @project.artifacts
   # end
 
-  # def show
-  # end
+  def show
+  end
 
   # def new
   #   @project_id = params[:project_id]
@@ -35,10 +35,7 @@ class ArtifactsController < ApplicationController
   end
 
   def destroy
-    binding.irb
-
-    @artifact = Artifact.find(params[:artifact_id])
-    binding.irb
+    # binding.irb
     @artifact.destroy
     redirect_to @project, notice: 'Artifact was successfully destroyed.'
   end
@@ -47,11 +44,11 @@ class ArtifactsController < ApplicationController
   private
 
   def set_project
-    @project = Project.find(params[:id])
+    @project = Project.find(params[:project_id])
   end
 
   def set_artifact
-    @artifact = @project.artifacts.find(params[:artifact_id])
+    @artifact = @project.artifacts.find(params[:id])
   end
   
   def artifact_params

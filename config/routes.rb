@@ -13,8 +13,8 @@ Rails.application.routes.draw do
       member do
         patch :complete_and_archive
         patch :reopen
-        resources :artifacts, only: [:create, :update, :destroy]
       end
+      resources :artifacts, only: [:show, :create, :update, :destroy]
     end
   end
 

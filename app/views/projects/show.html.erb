@@ -14,8 +14,8 @@
   <h2>Artifacts</h2>
     <% @project.artifacts.each do |artifact| %>
       <div class="mt-3">
-        <%= link_to artifact.name, artifact_path(artifact) %></td>
-        <%= link_to("X", artifact_path(artifact), class: "btn text-danger border border-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+        <%= link_to artifact.name, project_artifact_path(@project, artifact) %>
+        <%= link_to("X", project_artifact_path(@project, artifact), class: "btn text-danger border border-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
       </div>
     <% end %>
 </div>
