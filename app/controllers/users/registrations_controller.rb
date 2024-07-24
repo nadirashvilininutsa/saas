@@ -15,12 +15,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
         organization = Organization.new(organization_params)
         resource.organization = organization
 
-        if organization.save
-          # create_employee(resource, organization)
-          # set_flash_message! :notice, :signed_up
-          # sign_up(resource_name, resource)
-          # respond_with resource, location: after_sign_up_path_for(resource)
-        else
+        if !organization.save
           resource.destroy
           clean_up_passwords resource
           set_minimum_password_length
@@ -47,10 +42,4 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def organization_params
     params.require(:organization).permit(:name, :plan_id)
   end
-
-  # def create_employee(user, organization)
-  #   Apartment::Tenant.switch!(organization.subdomain) do
-  #     Employee.create(user: user)
-  #   end
-  # end
 end

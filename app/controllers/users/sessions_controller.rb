@@ -1,8 +1,5 @@
-# frozen_string_literal: true
-
 class Users::SessionsController < Devise::SessionsController
   before_action :configure_sign_in_params, only: [:create]
-  # after_action :switch_domain_to_public, only: [:destroy]
 
   # GET /resource/sign_in
   def new
@@ -16,7 +13,7 @@ class Users::SessionsController < Devise::SessionsController
     sign_in(resource_name, resource)
     yield resource if block_given?
 
-    redirect_to after_sign_in_path_for(resource), allow_other_host: true
+    redirect_to root_url
   end
 
   # DELETE /resource/sign_out
@@ -27,7 +24,7 @@ class Users::SessionsController < Devise::SessionsController
 
     respond_to do |format|
       format.all { head :no_content }
-      format.any(*navigational_formats) { redirect_to root_url(subdomain: nil), allow_other_host: true, status: Devise.responder.redirect_status }
+      format.any(*navigational_formats) { redirect_to root_url, status: Devise.responder.redirect_status }
     end
   end
 
@@ -35,21 +32,5 @@ class Users::SessionsController < Devise::SessionsController
 
   def configure_sign_in_params
     devise_parameter_sanitizer.permit(:sign_in, keys: [:attribute])
-  end
-
-  # def switch_domain_to_public
-  #   if !user_signed_in?
-  #     Apartment::Tenant.switch('public')
-  #   end
-  # end
-
-  def after_sign_in_path_for(resource)
-    organization = Organization.find_by(id: resource.organization_id)
-    if organization
-      subdomain = organization.subdomain
-      root_url(subdomain: subdomain)
-    else
-      root_url(subdomain: nil)
-    end
   end
 end
