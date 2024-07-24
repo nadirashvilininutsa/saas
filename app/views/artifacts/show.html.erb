@@ -1,0 +1,20 @@
+<%- model_class = Artifact -%>
+
+<div class="page-header">
+  <h1><%=t ".title", default: model_class.model_name.human.titleize %></h1>
+</div>
+
+<dl class="dl-horizontal">
+  <dt><strong><%= model_class.human_attribute_name(:name) %>:</strong></dt>
+  <dd><%= @artifact.name %></dd>
+  <dt></dt>
+  <dd><%= artifact_tag(@artifact.file.url) if @artifact.file? %></dd>
+</dl>
+
+<%= link_to("Back", project_artifacts_path, class: "btn btn-dark") %>
+
+<%= link_to("Edit", edit_artifact_path(@artifact), class: "btn btn-warning") %>
+
+<%= link_to("Delete", artifact_path(@artifact), class: "btn btn-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+
+<%= link_to("All Artifacts", project_artifacts_path, class: "btn btn-info") %>

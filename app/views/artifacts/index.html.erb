@@ -1,0 +1,17 @@
+<table class="table table-striped">
+  <tbody>
+    <% artifacts.each do |artifact| %>
+      <tr>
+        <td><%= link_to artifact.name, artifact_path(artifact) %></td>
+        <td><%= artifact_tag artifact.file.url %></td>
+        <td>
+          <%= link_to("View", artifact_path(artifact), class: "btn btn-success") %>
+          
+          <%= link_to("Edit", edit_artifact_path(artifact), class: "btn btn-warning") %>
+          
+          <%= link_to("Delete", artifact_path(artifact), class: "btn btn-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
