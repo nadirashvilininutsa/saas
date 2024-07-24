@@ -36,8 +36,6 @@ class ProjectsController < ApplicationController
 
   # POST /projects or /projects.json
   def create
-    Rails.logger.info "1. Current tenant: #{Apartment::Tenant.current}"
-
     @project = Project.new(project_params)
     @project.organization = current_user.organization
     @project.users << current_user
