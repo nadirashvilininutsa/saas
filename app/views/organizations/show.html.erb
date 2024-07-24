@@ -1,0 +1,26 @@
+<div class="container mt-3">
+  <h3 class="text-end">ORGANIZATION: <%= @organization.name %></h3>
+</div>
+
+<div class="mt-3">
+  <p>
+    <strong>Current Plan:</strong>
+    <%= @plan.name %>
+
+    <ul>
+      <% @plan.plan_descriptions.each do |description| %>
+        <li><%= description.content %></li>
+      <% end %>
+
+      <%= link_to("Change Plan", plans_path, class: "btn btn-success mt-3") %>
+    <ul>
+  </p>
+</div>
+
+<div class="mt-3">
+  <strong>Employees:</strong>
+</div>
+
+<div class="mt-3">
+  <%= render "users/list", users: @users %>
+</div>

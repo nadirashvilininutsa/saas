@@ -1,0 +1,26 @@
+<div class="container mt-5">
+  <div class="plans row justify-content-center" style="gap: 1rem">
+    <% @plans.each do |plan| %>
+      <div class="plan border border-dark rounded h-10" style="height: 15rem; width: 15rem">
+        <h2><%= plan.name %> Plan</h2>
+        <div class="price mb-2">
+          <strong>Price: <%= plan.price == 0 ? "Free" : "$#{'%.2f' % plan.price}" %></strong>
+        </div>
+        <div class="features">
+          <ul>
+            <% plan.plan_descriptions.each do |description| %>
+              <li><%= description.content.strip.capitalize %></li>
+            <% end %>
+          </ul>
+        </div>
+        <p class="text-center">
+          <% if @organization.plan_id == plan.id %>
+            <button class="btn btn-primary" disabled >Current Plan</button>  
+          <% else %>
+            <%= link_to 'Choose', change_plan_organization_path(@organization, plan_id: plan.id), method: :patch, class: 'btn btn-primary sign-up', data: { turbo_method: :patch, confirm: "Are you sure you want to change the plan?" } %>
+          <% end %>
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>
