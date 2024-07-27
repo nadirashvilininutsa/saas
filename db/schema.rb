@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_07_22_134639) do
+ActiveRecord::Schema[7.2].define(version: 2024_07_26_123412) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -32,6 +32,14 @@ ActiveRecord::Schema[7.2].define(version: 2024_07_22_134639) do
     t.string "subdomain"
     t.index ["plan_id"], name: "index_organizations_on_plan_id"
     t.index ["subdomain"], name: "index_organizations_on_subdomain", unique: true
+  end
+
+  create_table "permissions", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_permissions_on_name", unique: true
   end
 
   create_table "plan_description_plans", force: :cascade do |t|
@@ -70,6 +78,23 @@ ActiveRecord::Schema[7.2].define(version: 2024_07_22_134639) do
     t.index ["user_id"], name: "index_projects_users_on_user_id"
   end
 
+  create_table "role_permissions", force: :cascade do |t|
+    t.integer "role_id"
+    t.integer "permission_id"
+  end
+
+  create_table "roles", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_roles_on_name", unique: true
+  end
+
+  create_table "user_permissions", force: :cascade do |t|
+    t.integer "user_id"
+    t.integer "permission_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -83,7 +108,6 @@ ActiveRecord::Schema[7.2].define(version: 2024_07_22_134639) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "organization_id", null: false
-    t.boolean "admin", default: false, null: false
     t.string "first_name"
     t.string "last_name"
     t.string "invitation_token"
@@ -94,15 +118,18 @@ ActiveRecord::Schema[7.2].define(version: 2024_07_22_134639) do
     t.string "invited_by_type"
     t.bigint "invited_by_id"
     t.integer "invitations_count", default: 0
+    t.bigint "role_id"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
     t.index ["invited_by_type", "invited_by_id"], name: "index_users_on_invited_by"
     t.index ["organization_id"], name: "index_users_on_organization_id"
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
+    t.index ["role_id"], name: "index_users_on_role_id"
   end
 
   add_foreign_key "organizations", "plans"
   add_foreign_key "projects", "organizations"
   add_foreign_key "users", "organizations"
+  add_foreign_key "users", "roles"
 end
