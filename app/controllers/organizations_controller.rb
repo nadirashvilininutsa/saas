@@ -1,4 +1,8 @@
 class OrganizationsController < ApplicationController
+  before_action -> { has_required_permission?(:manage_organization) }, only: [:change_plan]
+  before_action -> { has_required_permission?(:add_delete_employees) }, only: [:show]
+
+
   # def new
   #   @organization = Organization.new
   #   @plans = Plan.all
@@ -31,10 +35,11 @@ class OrganizationsController < ApplicationController
     end
   end
   
-  # private
+  private
 
-  # def organization_params
-  #   # params.require(:organization).permit(:name, :subdomain, :plan_id)
-  #   params.require(:organization).permit(:name, :subdomain)
-  # end
+  def has_required_permission?(permission)
+    unless current_user.has_permission?(permission)
+      redirect_to root_path, alert: "Access denied."
+    end
+  end
 end

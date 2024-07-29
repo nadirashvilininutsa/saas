@@ -13,7 +13,8 @@ Rails.application.routes.draw do
   
   resources :users, only: [:index, :destroy] do
     member do
-      patch :toggle_user_status
+      patch :change_role
+      patch :update_permissions
     end
   end
 

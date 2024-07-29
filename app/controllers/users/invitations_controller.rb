@@ -1,5 +1,12 @@
 class Users::InvitationsController < Devise::InvitationsController
+  # before_action :check_permission(:add_delete_employees), only: [:create]
+  before_action -> { has_required_permission?(:add_delete_employeess) }, only: [:new, :create]
   before_action :configure_permitted_parameters, only: [:create]
+  
+  def new
+    @roles = Role.all
+    super
+  end
 
   def create
     build_resource(invite_params)
@@ -33,6 +40,12 @@ class Users::InvitationsController < Devise::InvitationsController
 
   # Permit new params
   def configure_permitted_parameters
-    devise_parameter_sanitizer.permit(:invite, keys: [:email, :first_name, :last_name, :admin, :organization_id])
+    devise_parameter_sanitizer.permit(:invite, keys: [:email, :first_name, :last_name, :role_id, :organization_id])
+  end
+
+  def has_required_permission?(permission)
+    unless current_user.has_permission?(permission)
+      redirect_to root_path, alert: "Access denied."
+    end
   end
 end

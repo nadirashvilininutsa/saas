@@ -19,8 +19,24 @@ class User < ApplicationRecord
   accepts_nested_attributes_for :organization
 
   def has_permission?(permission)
-    role_permissions = self.role.permissions.pluck(:name).map(&:to_sym)
-    user_permissions = self.permissions.pluck(:name).map(&:to_sym)
-    (role_permissions + user_permissions).include?(permission.to_sym)
+    permission = permission.to_sym
+    combined_permissions.include?(permission)
   end
+
+  def list_user_permissions_based_role
+    role.permissions.pluck(:name)
+  end
+
+
+  private
+
+  def combined_permissions
+    @combined_permissions ||= begin
+      role_permissions = role.permissions.pluck(:name).map(&:to_sym)
+      user_permissions = permissions.pluck(:name).map(&:to_sym)
+      (role_permissions + user_permissions).uniq
+    end
+  end
+
+
 end
