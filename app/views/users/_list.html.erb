@@ -4,9 +4,10 @@
       <th scope="col" class=" align-middle text-center">#</th>
       <th scope="col" class="col-2 align-middle">Name</th>
       <th scope="col" class="col-3 align-middle">Surname</th>
-      <th scope="col" class="col-4 align-middle">Email</th>
-      <th scope="col" class="col-1 align-middle">Admin</th>
-      <th scope="col" class="col-2 align-middle">Actions</th>
+      <th scope="col" class="col-3 align-middle">Email</th>
+      <th scope="col" class="col-1 align-middle">Role</th>
+      <th scope="col" class="col-1 align-middle">Additional Permissions</th>
+      <th scope="col" class="col-1 align-middle">Actions</th>
     </tr>
   </thead>
 
@@ -17,15 +18,89 @@
         <td><%= user.first_name %></td>
         <td><%= user.last_name %></td>
         <td><%= user.email %></td>
-        <td><%= user.admin ? "True" : "X" %></td>
+
+        <td>
+          <%= user.role.name %>
+          <% if current_user.has_permission?(:manage_user_roles) %>
+            <a class="toggle-button mt-1 btn btn-outline-primary">Update</a>
+
+            <%= form_with model: user, url: change_role_user_path(user), class: "hidden", data: { method: :patch}, local: true do |form| %>
+              <% Role.all.each do |role| %>
+                <div class="form-radio">
+                  <%= form.radio_button :role_id, role.id, checked: user.role == role, class: 'form-radio-input' %>
+                  <%= form.label :role_id, role.name, class: 'form-radio-label' %>
+                </div>
+              <% end %>
+              <%= form.submit 'Update', class: 'btn btn-success mt-2' %>
+            <% end %>
+          <% end %>
+        </td>
+
+        <td>
+          <% user.permissions.each do |permission| %>
+            <%= permission.name %>
+          <% end %>
+          
+          <% if current_user.has_permission?(:manage_user_permissions) %>
+            <a class="toggle-button mt-1 btn btn-outline-primary">Edit</a>
+            <%= form_with model: user, url: update_permissions_user_path(user), class: "hidden", data: { method: :patch}, local: true do |form| %>
+              <%= form.hidden_field :no_permission, value: [] %>
+              
+              <% Permission.all.each do |permission| %>
+                <% unless user.list_user_permissions_based_role.include?(permission.name) %>
+                  <div class="form-check">
+                    <%= form.check_box :permission_ids, { multiple: true, class: 'form-check-input', checked: user.permissions.include?(permission) }, permission.id, nil %>
+                    <%= form.label :permission_ids, permission.name, class: 'form-check-label' %>
+                  <% end %>
+                </div>
+              <% end %>
+              <%= form.submit 'Update', class: 'btn btn-success mt-2' %>
+            <% end %>
+          <% end %>
+        </td>
         
-        <td class="row">
-          <% if current_user.admin? %>
-            <%= link_to(user.admin ? "Revoke Admin" : "Grant Admin", toggle_user_status_user_path(user), class: "mt-1 btn btn-outline-primary", data: { turbo_method: :patch, confirm: "Are you sure?" }) %>
-            <%= link_to("Delete User", user_path(user), class: "mt-1 btn btn-outline-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+        <td>
+          <% if current_user.has_permission?(:add_delete_employees) %>
+            <%= link_to("Delete", user_path(user), class: "mt-1 btn btn-outline-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
           <% end %>
         </td>
       </tr>
     <% end %>
   </tbody>
 </table>
+
+
+
+<script>
+  document.addEventListener("turbo:load", changeRole());
+
+  function changeRole() {
+    console.log("page loaded");
+
+    document.querySelectorAll('.toggle-button').forEach(el => {
+      el.addEventListener('click', function() {
+        const role_list = el.nextElementSibling;
+        if (role_list.classList.contains("hidden")) {
+          role_list.classList.remove("hidden");
+          console.log("Clicked from if statement");
+        } else {
+          role_list.classList.add("hidden");
+          console.log("Clicked from else statement");
+        }
+      });
+    });
+  }
+</script>
+
+<!--
+// Option to have drop-down button for changing user roles
+  <button class="btn btn-outline-primary dropdown-toggle" type="button" id="dropdownMenuButton"         data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+  Change Role
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <% Role.all.each do |role| %>
+      <%= link_to role.name, "#", class: "dropdown-item", data: { role_id: role.id } %>
+    <% end %>
+  </div>
+  </div>
+-->

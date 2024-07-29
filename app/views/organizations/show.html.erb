@@ -12,7 +12,9 @@
         <li><%= description.content %></li>
       <% end %>
 
-      <%= link_to("Change Plan", plans_path, class: "btn btn-success mt-3") %>
+      <% if current_user.has_permission?(:manage_organization) %>
+        <%= link_to("Change Plan", plans_path, class: "btn btn-success mt-3") %>
+      <% end %>
     <ul>
   </p>
 </div>

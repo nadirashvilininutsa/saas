@@ -21,9 +21,9 @@
 </div>
 
 <div class="mt-3">
-  <%= link_to("Edit", edit_project_path(@project), class: "mt-1 btn btn-outline-warning") %>
+  <% if current_user.has_permission?(:manage_projects) && @project.users.include?(current_user) %>
+    <%= link_to("Edit", edit_project_path(@project), class: "mt-1 btn btn-outline-warning") %>
 
-  <% if current_user.admin? %>
     <% if @project.completed? %>
       <%= link_to("Reopen", reopen_project_path(@project), class: "mt-1 btn btn-outline-success", data: { turbo_method: :patch, confirm: "Are you sure?" }) %>
     <% else %>

@@ -18,13 +18,15 @@
         <td class="text-center"><%= project.completion_date %></td>
         
         <td class="row">
-          <%= link_to("View", project_path(project), class: "mt-1 btn btn-outline-primary") %>
-          
-          <% if !project.completed? %>
-            <%= link_to("Edit", edit_project_path(project), class: "mt-1 btn btn-outline-warning") %>
+          <% if current_user.has_permission?(:view_projects) %>
+            <%= link_to("View", project_path(project), class: "mt-1 btn btn-outline-primary") %>
           <% end %>
 
-          <% if current_user.admin? %>
+          <% if current_user.has_permission?(:manage_projects) && project.users.include?(current_user) %>
+            <% if !project.completed? %>
+              <%= link_to("Edit", edit_project_path(project), class: "mt-1 btn btn-outline-warning") %>
+            <% end %>
+
             <% if project.completed? %>
               <%= link_to("Reopen", reopen_project_path(project), class: "mt-1 btn btn-outline-success", data: { turbo_method: :patch, confirm: "Are you sure?" }) %>
             <% else %>
@@ -34,7 +36,6 @@
             <%= link_to("Delete", project_path(project), class: "mt-1 btn btn-outline-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
           <% end %>
         </td>
-
       </tr>
     <% end %>
   </tbody>

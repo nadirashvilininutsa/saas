@@ -1,6 +1,9 @@
 class ArtifactsController < ApplicationController
+  before_action -> { has_permission?(:view_artifacts) }, only: [:show]
   before_action :set_project
   before_action :set_artifact, only: %i[show update destroy]
+  before_action -> { has_permission_and_is_author?(:manage_artifacts) }, only: [:create, :update, :destroy]
+
 
   # def index
   #   @artifacts = @project.artifacts
@@ -53,5 +56,11 @@ class ArtifactsController < ApplicationController
   
   def artifact_params
     params.require(:artifact).permit(:name, :file)
+  end
+
+  def has_permission_and_is_author?(permission)
+    unless has_permission?(permission) && @artifact.user == current_user
+      redirect_to root_path, alert: "Access denied."
+    end
   end
 end
