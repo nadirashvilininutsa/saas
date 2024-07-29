@@ -1,4 +1,9 @@
 class UsersController < ApplicationController
+  before_action -> { has_required_permission?(:view_employees) }, only: [:index]
+  before_action -> { has_required_permission?(:manage_user_roles) }, only: [:change_role]
+  before_action -> { has_required_permission?(:manage_user_permissions) }, only: [:update_permissions]
+  before_action -> { has_required_permission?(:add_delete_employees) }, only: [:destroy]
+
   def index
     current_organization = current_user.organization
     @users = User.where(organization_id: current_organization.id).order(:first_name)
@@ -37,6 +42,15 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     @user.destroy
     redirect_to users_path, notice: 'User was successfully deleted.'
+  end
+
+
+  private
+
+  def has_required_permission?(permission)
+    unless current_user.has_permission?(permission)
+      redirect_to root_path, alert: "Access denied."
+    end
   end
 end
 
