@@ -1,6 +1,5 @@
 class Users::InvitationsController < Devise::InvitationsController
-  # before_action :check_permission(:add_delete_employees), only: [:create]
-  before_action -> { has_required_permission?(:add_delete_employeess) }, only: [:new, :create]
+  before_action -> { has_required_permission?(:add_delete_employees) }, only: [:new, :create]
   before_action :configure_permitted_parameters, only: [:create]
   
   def new

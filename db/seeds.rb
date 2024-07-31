@@ -25,14 +25,14 @@ if Plan.count.zero? && PlanDescription.count.zero? && PlanDescriptionPlan.count.
 end
 
 # # Create roles
-# super_admin = Role.create(name: 'Super Admin')
+# # super_admin = Role.create(name: 'Super Admin')
 # organization_admin = Role.create(name: 'Organization Admin')
 # project_manager = Role.create(name: 'Project Manager')
 # employee = Role.create(name: 'Employee')
 # viewer = Role.create(name: 'Viewer')
 
 # Get roles
-super_admin = Role.where(name: 'Super Admin').first
+# super_admin = Role.where(name: 'Super Admin').first
 organization_admin = Role.where(name: 'Organization Admin').first
 project_manager = Role.where(name: 'Project Manager').first
 employee = Role.where(name: 'Employee').first
@@ -47,7 +47,7 @@ permissions = [
   { name: 'manage_user_roles', description: 'Ability to change user roles' },
   { name: 'assign_employees_projects', description: 'Ability to assign/remove projects to/from users' },
   { name: 'assign_employees_tasks', description: 'Ability to assign/remove tasks to/from users' },
-  { name: 'manage_projects', description: 'Ability to create, edit, complete or cancel own projects' },
+  { name: 'manage_projects', description: 'Ability to create, edit, complete, reopen or cancel own projects' },
   { name: 'view_projects', description: 'Ability to view projects' },
   { name: 'manage_tasks', description: 'Ability to create, edit and cancel tasks' },
   { name: 'complete_tasks', description: 'Ability to complete tasks' },
@@ -61,7 +61,7 @@ permissions = [
 
 permissions.each do |perm|
   permission = Permission.create(perm)
-  super_admin.permissions << permission
+  # super_admin.permissions << permission
 end
 
 # Assign permissions to roles

@@ -6,16 +6,22 @@
   <%= render @project %>
 </div>
 
-<div class="mt-3">
-  <%= render 'artifacts/form', artifact: @artifact, project: @project %>
-</div>
+<% if current_user.has_permission?(:manage_artifacts) && @project.users.include?(current_user) %>
+  <div class="mt-3">
+    <%= render 'artifacts/form', artifact: @artifact, project: @project %>
+  </div>
+<% end %>
+
 
 <div class="mt-3">
   <h2>Artifacts</h2>
     <% @project.artifacts.each do |artifact| %>
       <div class="mt-3">
         <%= link_to artifact.name, project_artifact_path(@project, artifact) %>
-        <%= link_to("X", project_artifact_path(@project, artifact), class: "btn text-danger border border-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+        
+        <% if current_user.has_permission?(:manage_artifacts) && artifact.users == current_user %>
+          <%= link_to("X", project_artifact_path(@project, artifact), class: "btn text-danger border border-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+        <% end %>
       </div>
     <% end %>
 </div>
