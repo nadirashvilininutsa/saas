@@ -1,5 +1,8 @@
 class ProjectsController < ApplicationController
   before_action :set_project, only: %i[ show edit update destroy complete_and_archive reopen ]
+  before_action -> { has_required_permission?(:view_projects) }, only: [:index, :show]
+  before_action -> { has_required_permission?(:manage_projects) }, only: [:new, :create]
+  before_action -> { has_required_permission_and_is_author?(:manage_projects) }, only: [:edit, :complete_and_archive, :reopen, :update]
 
   # GET /projects or /projects.json
   def index
@@ -76,7 +79,19 @@ class ProjectsController < ApplicationController
   end
 
   private
+
+  def has_required_permission?(permission)
+    unless current_user.has_permission?(permission)
+      redirect_to root_path, alert: "Access denied."
+    end
+  end
   
+  def has_required_permission_and_is_author?(permission)
+    unless current_user.has_permission?(permission) && @project.users.include?(current_user)
+      redirect_to root_path, alert: "Access denied."
+    end
+  end
+
   def set_project
     @project = Project.find(params[:id])
   end
@@ -91,3 +106,4 @@ class ProjectsController < ApplicationController
   end
   helper_method :free_plan? 
 end
+
