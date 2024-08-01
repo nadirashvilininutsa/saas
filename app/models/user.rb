@@ -7,11 +7,17 @@ class User < ApplicationRecord
   belongs_to :organization, optional: false
   belongs_to :role, optional: false
   
-  has_many :projects_users
+  has_many :projects_users, dependent: :destroy
   has_many :projects, through: :projects_users
+  has_many :organizations, through: :projects_users
 
-  has_many :user_permissions
+  has_many :comments
+  has_many :tasks
+
+  has_many :user_permissions, dependent: :destroy
   has_many :permissions, through: :user_permissions
+  has_many :organizations, through: :user_permissions
+
   # scope :admins, -> { where(admin: true) }
 
   validates :first_name, :last_name, presence: true
