@@ -21,6 +21,7 @@ class User < ApplicationRecord
   # scope :admins, -> { where(admin: true) }
 
   validates :first_name, :last_name, presence: true
+  validates :email, presence: true, uniqueness: true
 
   accepts_nested_attributes_for :organization
 

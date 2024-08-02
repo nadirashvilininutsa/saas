@@ -7,5 +7,5 @@ class Permission < ApplicationRecord
   has_many :roles, through: :role_permissions
 
   validates :name, presence: true, uniqueness: true
-  validates :description, presence: true
+  validates :description
 end

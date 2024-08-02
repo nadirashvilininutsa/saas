@@ -1,8 +1,8 @@
 class Comment < ApplicationRecord
-  belongs_to :organization
-  belongs_to :user
-  belongs_to :project
-  belongs_to :task
+  belongs_to :organization, optional: false
+  belongs_to :user, optional: false
+  belongs_to :project, optional: false
+  belongs_to :task, optional: false
 
   validates :content, presence: true
 end

@@ -1,5 +1,5 @@
 class ProjectsUser < ApplicationRecord
-  belongs_to :user
-  belongs_to :project
-  belongs_to :organization
+  belongs_to :user, optional: false
+  belongs_to :project, optional: false
+  belongs_to :organization, optional: false
 end

@@ -8,12 +8,14 @@ class Project < ApplicationRecord
 
   has_many :artifacts, as: :artifactable, dependent: :destroy
 
-  belongs_to :organization
+  belongs_to :organization, optional: false
 
-  validates :title, presence: true
+  validates :title, presence: true, uniqueness: true
   validates :description, presence: true
   validates :completion_date, presence: true
-  validate :must_have_at_least_one_user
+  validates :completed, inclusion: { in: [true, false] }, presence: true
+
+  # validate :must_have_at_least_one_user
 
   validate :free_plan_can_only_have_one_project
 
@@ -25,9 +27,9 @@ class Project < ApplicationRecord
   
   private
 
-  def must_have_at_least_one_user
-    errors.add(:base, "Project must have at least one user") if users.empty?
-  end
+  # def must_have_at_least_one_user
+  #   errors.add(:base, "Project must have at least one user") if users.empty?
+  # end
 
   def free_plan_can_only_have_one_project
     plan = Plan.find(organization.plan_id)
