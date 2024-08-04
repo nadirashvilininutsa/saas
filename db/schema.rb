@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_08_04_161147) do
+ActiveRecord::Schema[7.2].define(version: 2024_08_04_194435) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,7 +21,11 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_04_161147) do
     t.datetime "updated_at", null: false
     t.string "artifactable_type", null: false
     t.bigint "artifactable_id", null: false
+    t.bigint "organization_id", null: false
+    t.bigint "user_id", null: false
     t.index ["artifactable_type", "artifactable_id"], name: "index_artifacts_on_artifactable"
+    t.index ["organization_id"], name: "index_artifacts_on_organization_id"
+    t.index ["user_id"], name: "index_artifacts_on_user_id"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -171,6 +175,8 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_04_161147) do
     t.index ["role_id"], name: "index_users_on_role_id"
   end
 
+  add_foreign_key "artifacts", "organizations"
+  add_foreign_key "artifacts", "users"
   add_foreign_key "comments", "organizations"
   add_foreign_key "comments", "projects"
   add_foreign_key "comments", "tasks"

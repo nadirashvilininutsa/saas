@@ -13,6 +13,7 @@ class User < ApplicationRecord
 
   has_many :comments
   has_many :tasks
+  has_many :artifacts
 
   has_many :user_permissions, dependent: :destroy
   has_many :permissions, through: :user_permissions
