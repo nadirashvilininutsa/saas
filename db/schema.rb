@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.2].define(version: 2024_08_02_211344) do
+ActiveRecord::Schema[7.2].define(version: 2024_08_04_161147) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -176,12 +176,20 @@ ActiveRecord::Schema[7.2].define(version: 2024_08_02_211344) do
   add_foreign_key "comments", "tasks"
   add_foreign_key "comments", "users"
   add_foreign_key "organizations", "plans"
+  add_foreign_key "plan_description_plans", "plan_descriptions"
+  add_foreign_key "plan_description_plans", "plans"
   add_foreign_key "projects", "organizations"
   add_foreign_key "projects_users", "organizations"
+  add_foreign_key "projects_users", "projects"
+  add_foreign_key "projects_users", "users"
+  add_foreign_key "role_permissions", "permissions"
+  add_foreign_key "role_permissions", "roles"
   add_foreign_key "tasks", "organizations"
   add_foreign_key "tasks", "projects"
   add_foreign_key "tasks", "users"
   add_foreign_key "user_permissions", "organizations"
+  add_foreign_key "user_permissions", "permissions"
+  add_foreign_key "user_permissions", "users"
   add_foreign_key "users", "organizations"
   add_foreign_key "users", "roles"
 end
