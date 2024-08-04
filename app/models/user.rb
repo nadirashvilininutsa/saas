@@ -19,12 +19,19 @@ class User < ApplicationRecord
   has_many :permissions, through: :user_permissions
   has_many :organizations, through: :user_permissions
 
-  # scope :admins, -> { where(admin: true) }
-
   validates :first_name, :last_name, presence: true
   validates :email, presence: true, uniqueness: true
 
   accepts_nested_attributes_for :organization
+
+  # Scopes for ACTIVE and ALL records
+  default_scope { where(deleted_at: nil) }
+  scope :with_deleted, -> { unscope(where: :deleted_at) }
+
+  
+  def deleted?
+    deleted_at.present?
+  end
 
   def has_permission?(permission)
     permission = permission.to_sym
@@ -45,6 +52,4 @@ class User < ApplicationRecord
       (role_permissions + user_permissions).uniq
     end
   end
-
-
 end
