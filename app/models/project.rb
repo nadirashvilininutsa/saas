@@ -13,12 +13,11 @@ class Project < ApplicationRecord
   validates :title, presence: true, uniqueness: true
   validates :description, presence: true
   validates :completion_date, presence: true
-  validates :completed, inclusion: { in: [true, false] }, presence: true
+  validates :completed, inclusion: { in: [true, false] }
 
   # validate :must_have_at_least_one_user
 
   validate :free_plan_can_only_have_one_project
-
 
   # Scopes
   scope :active, -> { where(completed: false) }

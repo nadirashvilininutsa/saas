@@ -3,14 +3,13 @@
     <tr>
       <th scope="col" class=" align-middle text-center">#</th>
       <th scope="col" class="col-2 align-middle">Name</th>
-      <th scope="col" class="col-3 align-middle">Surname</th>
+      <th scope="col" class="col-2 align-middle">Surname</th>
       <th scope="col" class="col-3 align-middle">Email</th>
-      <th scope="col" class="col-1 align-middle">Role</th>
-      <th scope="col" class="col-1 align-middle">Additional Permissions</th>
+      <th scope="col" class="col-2 align-middle">Role</th>
+      <th scope="col" class="col-2 align-middle">Additional Permissions</th>
       <th scope="col" class="col-1 align-middle">Actions</th>
     </tr>
   </thead>
-
   <tbody>
     <% @users.each_with_index do |user, i| %>
       <tr>
@@ -75,21 +74,19 @@
   document.addEventListener("turbo:load", changeRole());
 
   function changeRole() {
-    console.log("page loaded");
-
     document.querySelectorAll('.toggle-button').forEach(el => {
       el.addEventListener('click', function() {
         const role_list = el.nextElementSibling;
+
         if (role_list.classList.contains("hidden")) {
           role_list.classList.remove("hidden");
-          console.log("Clicked from if statement");
         } else {
           role_list.classList.add("hidden");
-          console.log("Clicked from else statement");
         }
       });
     });
   }
+  
 </script>
 
 <!--

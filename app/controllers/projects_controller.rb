@@ -6,14 +6,16 @@ class ProjectsController < ApplicationController
 
   # GET /projects or /projects.json
   def index
-    @projects = Project.all
-    @active_projects = Project.active
-    @archived_projects = Project.archived
+    @active_projects = Project.active.where(organization: current_user.organization)
+    @archived_projects = Project.archived.where(organization: current_user.organization)
+    @no_projects_present = @archived_projects.empty? && @active_projects.empty?
   end
 
   # GET /projects/1 or /projects/1.json
   def show
     @artifacts = @project.artifacts
+    @tasks = @project.tasks
+    @artifacts = @project.users
   end
 
   # GET /projects/new
@@ -41,10 +43,11 @@ class ProjectsController < ApplicationController
   def create
     @project = Project.new(project_params)
     @project.organization = current_user.organization
-    @project.users << current_user
 
     respond_to do |format|
       if @project.save
+        ProjectsUser.create(user: current_user, project: @project, organization: current_user.organization)
+
         format.html { redirect_to project_url(@project), notice: "Project was successfully created." }
         format.json { render :show, status: :created, location: @project }
       else
@@ -97,7 +100,7 @@ class ProjectsController < ApplicationController
   end
 
   def project_params
-    params.require(:project).permit(:title, :description, :completion_date, :completed)
+    params.require(:project).permit(:title, :description, :completion_date, :completed, :organization)
   end
 
   def free_plan?
