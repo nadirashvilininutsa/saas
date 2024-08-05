@@ -19,7 +19,7 @@
       <div class="mt-3">
         <%= link_to artifact.name, project_artifact_path(@project, artifact) %>
         
-        <% if current_user.has_permission?(:manage_artifacts) && artifact.users == current_user %>
+        <% if current_user.has_permission?(:manage_artifacts) && artifact.user == current_user %>
           <%= link_to("X", project_artifact_path(@project, artifact), class: "btn text-danger border border-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
         <% end %>
       </div>

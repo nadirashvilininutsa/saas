@@ -2,9 +2,10 @@
   <h1 class="text-end"><%= current_user.organization.name %></h1>
 </div>
 
-<% if @projects.empty? %>
+
+<% if @no_projects_present %>
   <div>
-    <p>You do not have any projects</p>
+    <h3>You do not have any projects</h3>
   </div>
 
 <% else %>

@@ -12,11 +12,19 @@ class UsersController < ApplicationController
   def change_role
     @user = User.find(params[:id])
     role = Role.find(params[:user][:role_id])
+
     if role
       @user.update(role: role)
-      redirect_to users_path, notice: "#{@user.first_name} #{@user.last_name} is now #{role.name}."
+      duplicated_permissions = role.permission_ids & @user.permission_ids
+
+      duplicated_permissions.each do |permission_id|
+        UserPermission.where(permission_id: permission_id).delete_all
+      end
+
+      redirect_to organization_path(current_user.organization), notice: "#{@user.first_name} #{@user.last_name} is now #{role.name}."
+    
     else
-      redirect_to users_path, alert: "#{@user.first_name} #{@user.last_name}`s role could not be updated. Role not found."
+      redirect_to organization_path(current_user.organization), alert: "#{@user.first_name} #{@user.last_name}`s role could not be updated. Role not found."
     end
   end
 
@@ -24,24 +32,35 @@ class UsersController < ApplicationController
     @user = User.find(params[:id])
     
     if params[:user][:permission_ids]
-      permission_ids = params[:user][:permission_ids].reject(&:blank?)
-      @user.permission_ids = permission_ids
+      updated_permission_ids = params[:user][:permission_ids].reject(&:blank?).map(&:to_i)
+      current_permission_ids = @user.permission_ids
+
+      permissions_to_add = updated_permission_ids - current_permission_ids
+      permissions_to_remove = current_permission_ids - updated_permission_ids
+    
+      permissions_to_add.each do |permission_id|
+        UserPermission.create(user: @user, permission_id: permission_id, organization: @user.organization)
+      end
+    
+      permissions_to_remove.each do |permission_id|
+        UserPermission.where(user: @user, permission_id: permission_id).destroy_all
+      end
 
       if @user.save
-        redirect_to users_path, notice: "#{@user.first_name} #{@user.last_name}'s permissions were successfully updated."
+        redirect_to organization_path(current_user.organization), notice: "#{@user.first_name} #{@user.last_name}'s permissions were successfully updated."
       else
-        redirect_to users_path, alert: "Failed to update permissions for #{@user.first_name} #{@user.last_name}."
+        redirect_to organization_path(current_user.organization), alert: "Failed to update permissions for #{@user.first_name} #{@user.last_name}."
       end
     else
       @user.permissions.delete_all
-      redirect_to users_path, alert: "All additional permissions removed from #{@user.first_name} #{@user.last_name}."
+      redirect_to organization_path(current_user.organization), alert: "All additional permissions removed from #{@user.first_name} #{@user.last_name}."
     end
   end
 
   def destroy
     @user = User.find(params[:id])
-    @user.destroy
-    redirect_to users_path, notice: 'User was successfully deleted.'
+    @user.update(deleted_at: Time.current)
+    redirect_to root_path, notice: 'User was successfully deleted.'
   end
 
 
