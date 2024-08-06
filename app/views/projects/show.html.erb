@@ -27,6 +27,99 @@
 </div>
 
 <div class="mt-3">
+  <h2>Project Users</h2>
+
+  <table class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col" class=" align-middle text-center">#</th>
+        <th scope="col" class="col-2 align-middle">Name</th>
+        <th scope="col" class="col-3 align-middle">Email</th>
+        <th scope="col" class="col-2 align-middle">Role</th>
+        <th scope="col" class="col-3 align-middle">Additional Permissions</th>
+        <th scope="col" class="col-2 align-middle">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @project_users.each_with_index do |user, i| %>
+        <tr>
+          <th scope="row"><%= i + 1 %></th>
+          <td><%= "#{user.first_name} #{user.last_name}" %></td>
+          <td><%= user.email %></td>
+          <td><%= user.role.name %></td>
+          <td>
+            <% user.permissions.each do |permission| %>
+              <%= permission.name %>
+            <% end %>
+          </td>
+          <td>
+            <% if current_user.has_permission?(:assign_employees_projects) %>
+              <%= link_to("Remove", remove_project_employee_project_path(@project, user_id: user.id), class: "mt-1 btn btn-outline-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+
+  <% if current_user.has_permission?(:assign_employees_projects) %>
+    <a class="toggle-button mt-1 btn btn-outline-primary">Add Employees</a>
+    <%= form_with model: @project, url: add_project_employees_project_path, class: "hidden", data: { method: :post}, method: :post, local: true do |form| %>
+      <%= form.hidden_field :no_employee, value: [] %>
+      
+      <% if !@users_to_add.empty? %>
+        <% @users_to_add.each do |user| %>
+          <div class="form-check">
+            <%= form.check_box :user_ids, { multiple: true, class: 'form-check-input', checked: @project.users.include?(user) }, user.id, nil %>
+            <%= form.label :user_ids, user.email, class: 'form-check-label' %>
+          </div>
+        <% end %>
+        <%= form.submit 'Update', class: 'btn btn-success mt-2' %>
+      <% else %>
+        <p> All users are already included in the project. </p>
+      <% end %>
+    <% end %>
+  <% end %>
+</div>
+
+<div class="mt-3">
+  <h2>Tasks</h2>
+
+  <table class="table table-hover">
+    <thead class="thead-dark">
+      <tr>
+        <th scope="col" class=" align-middle text-center">#</th>
+        <th scope="col" class="col-2 align-middle">Title</th>
+        <th scope="col" class="col-2 align-middle">Description</th>
+        <th scope="col" class="col-3 align-middle">Completed</th>
+        <th scope="col" class="col-3 align-middle">Completion Date</th>
+        <th scope="col" class="col-2 align-middle">Assigned User</th>
+        <th scope="col" class="col-1 align-middle">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @tasks.each_with_index do |task, i| %>
+        <tr>
+          <th scope="row"><%= i + 1 %></th>
+          <td><%= task.title %></td>
+          <td><%= task.description %></td>
+          <td><%= task.completed %></td>
+          <td><%= task.completion_date %></td>
+          <td><%= "#{task.user.first_name} #{task.user.last_name}" %></td>
+          <td>
+            <% if current_user.has_permission?(:assign_employees_projects) %>
+              <%= link_to("Remove", remove_project_employee_project_path(@project, user_id: user.id), class: "mt-1 btn btn-outline-danger", data: { turbo_method: :delete, confirm: "Are you sure?" }) %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
+
+
+<div class="mt-3">
   <% if current_user.has_permission?(:manage_projects) && @project.users.include?(current_user) %>
     <%= link_to("Edit", edit_project_path(@project), class: "mt-1 btn btn-outline-warning") %>
 
@@ -42,3 +135,22 @@
 <div class="mb-4">
   <%= link_to("Back to Projects", projects_path, class: "mt-1 btn btn-outline-primary") %>
 </div>
+
+
+<script>
+  document.addEventListener("turbo:load", changeRole());
+
+  function changeRole() {
+    document.querySelectorAll('.toggle-button').forEach(el => {
+      el.addEventListener('click', function() {
+        const user_list = el.nextElementSibling;
+
+        if (user_list.classList.contains("hidden")) {
+          user_list.classList.remove("hidden");
+        } else {
+          user_list.classList.add("hidden");
+        }
+      });
+    });
+  }
+</script>

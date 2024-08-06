@@ -5,6 +5,9 @@ Rails.application.routes.draw do
     member do
       patch :complete_and_archive
       patch :reopen
+      post :add_project_employees
+      # post :update_project_employees
+      delete 'remove_project_employee/:user_id', to: 'projects#remove_project_employee', as: 'remove_project_employee'
     end
     resources :artifacts, only: [:show, :create, :destroy]
   end

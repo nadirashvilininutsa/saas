@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
-  before_action :set_project, only: %i[ show edit update destroy complete_and_archive reopen ]
+  # before_action :set_project, only: %i[ show edit update destroy complete_and_archive reopen update_project_employees remove_project_employee ]
+  before_action :set_project, only: %i[ show edit update destroy complete_and_archive reopen add_project_employees remove_project_employee ]
   before_action -> { has_required_permission?(:view_projects) }, only: [:index, :show]
   before_action -> { has_required_permission?(:manage_projects) }, only: [:new, :create]
   before_action -> { has_required_permission_and_is_author?(:manage_projects) }, only: [:edit, :complete_and_archive, :reopen, :update]
@@ -15,7 +16,9 @@ class ProjectsController < ApplicationController
   def show
     @artifacts = @project.artifacts
     @tasks = @project.tasks
-    @artifacts = @project.users
+    @project_users = @project.users
+    @organization_users = @project.organization.users
+    @users_to_add = @organization_users - @project_users
   end
 
   # GET /projects/new
@@ -37,6 +40,59 @@ class ProjectsController < ApplicationController
   def reopen
     @project.update(completed: false)
     redirect_to projects_path, notice: 'Project has been reopened.'
+  end
+
+  # # Update employee list for the project
+  # def update_project_employees
+  #   if params[:project][:user_ids]
+  #     updated_user_ids = params[:project][:user_ids].reject(&:blank?).map(&:to_i)
+  #     current_user_ids = @project.user_ids
+
+  #     users_to_add = updated_user_ids - current_user_ids
+  #     users_to_remove = current_user_ids - updated_user_ids
+    
+  #     users_to_add.each do |user_id|
+  #       ProjectsUser.create(user_id: user_id, project: @project, organization: @project.organization)
+  #     end
+    
+  #     users_to_remove.each do |user_id|
+  #       # binding.irb
+  #       ProjectsUser.where(user_id: user_id, project_id: @project.id, organization_id: @project.organization.id).delete_all
+  #     end
+
+  #     if @project.save
+  #       redirect_to project_path(@project), notice: "Project employee list was successfully updated."
+  #     else
+  #       redirect_to project_path(@project), alert: "Failed to update project employee list."
+  #     end
+  #   else
+  #     @project.users.delete_all
+  #     redirect_to project_path(@project), alert: "All employees were removed from the project."
+  #   end
+  # end
+
+  # Add employees to the project
+  def add_project_employees
+    users_to_add = params[:project][:user_ids].reject(&:blank?).map(&:to_i)
+  
+    users_to_add.each do |user_id|
+      ProjectsUser.find_or_create_by(user_id: user_id, project: @project, organization: @project.organization)
+    end
+  
+    if @project.save
+      redirect_to project_path(@project), notice: "Employee/s were successfully added to the project."
+    else
+      redirect_to project_path(@project), alert: "Failed to add employee/s to the project."
+    end
+  end
+
+  # Remove employees from the project
+  def remove_project_employee
+    user_id = params[:user_id]
+    
+    # binding.irb
+    ProjectsUser.where(user_id: user_id, project_id: @project.id, organization_id: @project.organization.id).delete_all
+    redirect_to project_path(@project), notice: "Employee was removed successfully."
   end
 
   # POST /projects or /projects.json

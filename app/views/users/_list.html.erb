@@ -11,7 +11,7 @@
     </tr>
   </thead>
   <tbody>
-    <% @users.each_with_index do |user, i| %>
+    <% users.each_with_index do |user, i| %>
       <tr>
         <th scope="row"><%= i + 1 %></th>
         <td><%= user.first_name %></td>
