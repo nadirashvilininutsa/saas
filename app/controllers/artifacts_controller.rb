@@ -1,9 +1,9 @@
 class ArtifactsController < ApplicationController
   before_action -> { has_required_permission?(:view_artifacts) }, only: [:show]
   before_action :set_project
-  before_action :set_artifact, only: %i[show update destroy]
+  before_action :set_artifact, only: [:show, :destroy]
   before_action -> { has_required_permission_and_access_to_project?(:manage_artifacts) }, only: [:create]
-  before_action -> { has_required_permission_and_is_author?(:manage_artifacts) }, only: [:update, :destroy]
+  before_action -> { has_required_permission_and_is_author?(:manage_artifacts) }, only: [:destroy]
 
 
   # def index

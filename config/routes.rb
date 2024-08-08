@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  resources :tasks
   root "home#index"
 
   resources :projects do
@@ -10,6 +11,12 @@ Rails.application.routes.draw do
       delete 'remove_project_employee/:user_id', to: 'projects#remove_project_employee', as: 'remove_project_employee'
     end
     resources :artifacts, only: [:show, :create, :destroy]
+    resources :tasks, only: [:create] do
+      member do
+        patch :complete
+        patch :reopen
+      end
+    end
   end
 
   devise_for :users, controllers: { registrations: 'users/registrations', sessions: 'users/sessions', invitations: 'users/invitations' }
